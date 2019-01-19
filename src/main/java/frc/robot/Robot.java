@@ -8,6 +8,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
  // Initialize all components for Teleop
+    int i =10;
+    double test = 1.10;
   }
 
   @Override
