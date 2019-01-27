@@ -44,6 +44,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     
  // Write Teleop code  
-    hothBot.tankDrive(lJoystick.getY(), rJoystick.getY()); //left and right sides are being controlled with joysticks
+   // hothBot.tankDrive(lJoystick.getY(), rJoystick.getY()); //left and right sides are being controlled with joysticks
+    hothBot.tankDrive(-lJoystick.getRawAxis(1)*.75, -lJoystick.getRawAxis(5)*.75);
   }
 }
