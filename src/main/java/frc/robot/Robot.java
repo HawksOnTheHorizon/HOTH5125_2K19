@@ -63,7 +63,5 @@ public class Robot extends TimedRobot {
     rightW.set(0.0);
     leftW.set(0.0);
   }
-
-
-
+}
 }
