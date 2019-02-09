@@ -21,7 +21,7 @@ public class Robot extends TimedRobot {
   JoystickButton a =new JoystickButton(contr, 1);
   JoystickButton b = new JoystickButton(contr, 2);
   JoystickButton x = new JoystickButton(contr, 3);  
-  JoystickButton y = new JoystickButton(contr, 3);
+  JoystickButton y = new JoystickButton(contr, 4);
 
   @Override
   public void robotInit() {
@@ -41,27 +41,27 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    if(y.get()){
+    if(x.get()){
       arm.set(0.25);
     }else{
       arm.set(0.0);
     }
 
-    if(a.get()){
+    if(b.get()){
       arm.set(-0.25);
     }else{
       arm.set(0.0);
     }
 
-    if(x.get()){
-    rightW.set(1.0);
-    leftW.set(-1.0);
-  }else if(b.get()){
-    rightW.set(-1.0);
-    leftW.set(1.0);
-  }else{
-    rightW.set(0.0);
-    leftW.set(0.0);
-  }
+  //   if(x.get()){
+  //   rightW.set(1.0);
+  //   leftW.set(-1.0);
+  // }else if(b.get()){
+  //   rightW.set(-1.0);
+  //   leftW.set(1.0);
+  // }else{
+  //   rightW.set(0.0);
+  //   leftW.set(0.0);
+//  }
 }
 }
