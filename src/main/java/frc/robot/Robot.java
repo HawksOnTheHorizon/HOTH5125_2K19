@@ -57,7 +57,7 @@ JoystickButton y = new JoystickButton(controller,3);
     else {
       finger.set(0.0);
     }
-}
+  }
 }
 
 
