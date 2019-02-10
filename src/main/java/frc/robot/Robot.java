@@ -52,7 +52,7 @@ JoystickButton y = new JoystickButton(controller,3);
 
     if (y.get()) {
       finger.set(1.0);
-      finger.setangle(180);
+      finger.setAngle(180);
     }
     else {
       finger.set(0.0);
