@@ -14,13 +14,14 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;;
-
+import edu.wpi.first.wpilibj.Servo;
 
 public class Robot extends TimedRobot {
 
   // VictorSP leftW = new VictorSP(0);
   // VictorSP rightW = new VictorSP(1);
   // VictorSP arm = new VictorSP(2);
+  Servo finger = new Servo(0); 
   Joystick contr = new Joystick(0);
   JoystickButton a =new JoystickButton(contr, 1);
   JoystickButton b = new JoystickButton(contr, 2);
@@ -77,5 +78,14 @@ public class Robot extends TimedRobot {
     rightW.set(ControlMode.PercentOutput,0);
     leftW.set(ControlMode.PercentOutput,0);
  }
+
+
+ if (y.get()) {
+   finger.setAngle(150);
+ }
+ else {
+   finger.setAngle(70);
+ }
+
 }
 }
