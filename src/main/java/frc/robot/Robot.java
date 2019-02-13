@@ -2,35 +2,28 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PWMVictorSPX;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.VictorSP;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.SpeedControllerGroup; 
 
 public class Robot extends TimedRobot {
   WPI_VictorSPX tl = new WPI_VictorSPX(4);
-  WPI_VictorSPX br = new WPI_VictorSPX(7); 
   WPI_VictorSPX bl = new WPI_VictorSPX(3);
+  WPI_VictorSPX br = new WPI_VictorSPX(7); 
+  WPI_VictorSPX tr = new WPI_VictorSPX(5);
 
   Servo finger = new Servo(0);
 
-  
   TalonSRX rightW = new TalonSRX(1);
   TalonSRX leftW = new TalonSRX(2);
-  TalonSRX arm = new TalonSRX(6);
+  VictorSPX arm = new VictorSPX(6);
 
   SpeedControllerGroup left = new SpeedControllerGroup(tl, bl);
   SpeedControllerGroup right = new SpeedControllerGroup(tr, br);
