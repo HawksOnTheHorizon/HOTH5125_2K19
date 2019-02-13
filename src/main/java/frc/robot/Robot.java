@@ -19,7 +19,7 @@ public class Robot extends TimedRobot {
   WPI_VictorSPX tr = new WPI_VictorSPX(5); 
   WPI_VictorSPX tl = new WPI_VictorSPX(4);
   WPI_VictorSPX br = new WPI_VictorSPX(7); 
-  WPI_VictorSPX bl = new WPI_VictorSPX(6);
+  WPI_VictorSPX bl = new WPI_VictorSPX(3);
 
   SpeedControllerGroup left = new SpeedControllerGroup(tl, bl);
   SpeedControllerGroup right = new SpeedControllerGroup(tr, br);
@@ -48,6 +48,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
  // Write Teleop code  
-    hothBot.tankDrive(-lJoystick.getRawAxis(1)*.75, -lJoystick.getRawAxis(5)*.75);
+    hothBot.tankDrive(-lJoystick.getRawAxis(1), -lJoystick.getRawAxis(5));
   }
 }
