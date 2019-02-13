@@ -9,21 +9,26 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.SpeedControllerGroup; 
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 public class Robot extends TimedRobot {
-  VictorSP tr = new VictorSP(0); 
-  VictorSP tl = new VictorSP(1);
-  VictorSP br = new VictorSP(2); 
-  VictorSP bl = new VictorSP(3);
+  WPI_VictorSPX tr = new WPI_VictorSPX(5); 
+  WPI_VictorSPX tl = new WPI_VictorSPX(4);
+  WPI_VictorSPX br = new WPI_VictorSPX(7); 
+  WPI_VictorSPX bl = new WPI_VictorSPX(6);
+
+  SpeedControllerGroup left = new SpeedControllerGroup(tl, bl);
+  SpeedControllerGroup right = new SpeedControllerGroup(tr, br);
+
+  DifferentialDrive hothBot = new DifferentialDrive(left, right);
   
   Joystick lJoystick = new Joystick(0);
   Joystick rJoystick = new Joystick(1);
- 
-  SpeedControllerGroup right = new SpeedControllerGroup(tr, br);
-  SpeedControllerGroup left = new SpeedControllerGroup(tl, bl);
-   
-  DifferentialDrive hothBot = new DifferentialDrive(left,right);
+
   @Override
   public void robotInit() {
  // Initialize all components for Teleop
@@ -42,9 +47,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    
  // Write Teleop code  
-   // hothBot.tankDrive(lJoystick.getY(), rJoystick.getY()); //left and right sides are being controlled with joysticks
     hothBot.tankDrive(-lJoystick.getRawAxis(1)*.75, -lJoystick.getRawAxis(5)*.75);
   }
 }
