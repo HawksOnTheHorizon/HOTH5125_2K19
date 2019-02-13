@@ -11,33 +11,41 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.SpeedControllerGroup; 
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class Robot extends TimedRobot {
   WPI_VictorSPX tl = new WPI_VictorSPX(4);
   WPI_VictorSPX bl = new WPI_VictorSPX(3);
-  WPI_VictorSPX br = new WPI_VictorSPX(7); 
+  WPI_VictorSPX br = new WPI_VictorSPX(7);
   WPI_VictorSPX tr = new WPI_VictorSPX(5);
-
-  Servo finger = new Servo(0);
-
   TalonSRX rightW = new TalonSRX(1);
   TalonSRX leftW = new TalonSRX(2);
   VictorSPX arm = new VictorSPX(6);
+
+  Servo finger = new Servo(0);
+
+  DigitalInput limit = new DigitalInput(0);
 
   SpeedControllerGroup left = new SpeedControllerGroup(tl, bl);
   SpeedControllerGroup right = new SpeedControllerGroup(tr, br);
 
   DifferentialDrive hothBot = new DifferentialDrive(left, right);
-  
+
   Joystick lJoystick = new Joystick(0);
-  
   Joystick contr = new Joystick(1);
+
   JoystickButton a = new JoystickButton(contr, 1);
   JoystickButton b = new JoystickButton(contr, 2);
   JoystickButton x = new JoystickButton(contr, 3);
   JoystickButton y = new JoystickButton(contr, 4);
-  JoystickButton rightB = new JoystickButton(contr, 5);
+  JoystickButton rightB = new JoystickButton(contr, 6);
+  JoystickButton leftFrenchPress = new JoystickButton(contr, 9);
+  JoystickButton rightFrenchPress = new JoystickButton(contr, 10);
+
+  boolean pressed = true;
+  boolean notPressed = false;
+  
 
   @Override
   public void robotInit() {
@@ -57,17 +65,31 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
- // Write Teleop code  
-    hothBot.tankDrive(-lJoystick.getRawAxis(1), -lJoystick.getRawAxis(5));
-
-    if (a.get()) {
-      arm.set(ControlMode.PercentOutput, .25);
+    // Write Teleop code
+    if (leftFrenchPress.get()) {
+      hothBot.tankDrive(-lJoystick.getRawAxis(1) * .75, -lJoystick.getRawAxis(5) * .75);
     } else {
+      hothBot.tankDrive(-lJoystick.getRawAxis(1), -lJoystick.getRawAxis(5));
+    }
+    
+    if (rightFrenchPress.get()) {
+      hothBot.tankDrive(lJoystick.getRawAxis(1) * .75, lJoystick.getRawAxis(5) * .75);
+    } else {
+      hothBot.tankDrive(-lJoystick.getRawAxis(1), -lJoystick.getRawAxis(5));
+    }
+
+
+
+    if ((a.get() == pressed) && (limit.get() == notPressed)) {
+      arm.set(ControlMode.PercentOutput, .50);
+    } else if ((a.get() == pressed) && (limit.get() == pressed)) {
+      arm.set(ControlMode.PercentOutput, 0);
+    } else{
       arm.set(ControlMode.PercentOutput, 0);
     }
 
     if (y.get()) {
-      arm.set(ControlMode.PercentOutput, -.25);
+      arm.set(ControlMode.PercentOutput, -.50);
     } else {
       arm.set(ControlMode.PercentOutput, 0);
     }
@@ -83,8 +105,8 @@ public class Robot extends TimedRobot {
       leftW.set(ControlMode.PercentOutput, 0);
     }
 
-    if (y.get()) {
-      finger.setAngle(150);
+    if (rightB.get()) {
+      finger.setAngle(175);
     } else {
       finger.setAngle(70);
     }
