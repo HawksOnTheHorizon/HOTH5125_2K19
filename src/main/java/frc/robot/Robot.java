@@ -12,6 +12,13 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
+
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.CvSource;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
 
 public class Robot extends TimedRobot {
   WPI_VictorSPX tl = new WPI_VictorSPX(4);
@@ -47,10 +54,45 @@ public class Robot extends TimedRobot {
   boolean notPressed = false;
   
 
+
   @Override
   public void robotInit() {
     // Initialize all components for Teleop
+    
+    new Thread(() -> {
+      UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(0);
+      camera1.setResolution(640, 480);
 
+      CvSink cvSink = CameraServer.getInstance().getVideo();
+      CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640, 480);
+
+      Mat source = new Mat();
+      Mat output = new Mat();
+
+      while (!Thread.interrupted()) {
+        cvSink.grabFrame(source);
+        Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
+        outputStream.putFrame(output);
+      }
+    }).start();
+
+    new Thread(() -> {
+      UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(1);
+      camera2.setResolution(640, 480);
+
+      CvSink cvSink = CameraServer.getInstance().getVideo();
+      CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640, 480);
+
+      Mat source = new Mat();
+      Mat output = new Mat();
+
+      while (!Thread.interrupted()) {
+        cvSink.grabFrame(source);
+        Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
+        outputStream.putFrame(output);
+      }
+    }).start();
+    
   }
 
   @Override
