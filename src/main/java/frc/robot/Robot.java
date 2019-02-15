@@ -3,9 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -13,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 
 public class Robot extends TimedRobot {
   WPI_VictorSPX tl = new WPI_VictorSPX(4);
@@ -26,6 +25,7 @@ public class Robot extends TimedRobot {
   Servo finger = new Servo(0);
 
   DigitalInput limit = new DigitalInput(0);
+  AnalogPotentiometer armPot = new AnalogPotentiometer(1);
 
   SpeedControllerGroup left = new SpeedControllerGroup(tl, bl);
   SpeedControllerGroup right = new SpeedControllerGroup(tr, br);
@@ -66,6 +66,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // Write Teleop code
+    System.out.println(armPot.get());
+    
+
     if (leftFrenchPress.get()) {
       hothBot.tankDrive(-lJoystick.getRawAxis(1) * .75, -lJoystick.getRawAxis(5) * .75);
     } else {
