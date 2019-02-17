@@ -113,11 +113,7 @@ public class Robot extends TimedRobot {
 
     if (leftFrenchPress.get()) {
       hothBot.tankDrive(-lJoystick.getRawAxis(1) * .75, -lJoystick.getRawAxis(5) * .75);
-    } else {
-      hothBot.tankDrive(-lJoystick.getRawAxis(1), -lJoystick.getRawAxis(5));
-    }
-    
-    if (rightFrenchPress.get()) {
+    } else if (rightFrenchPress.get()) {
       hothBot.tankDrive(lJoystick.getRawAxis(1) * .75, lJoystick.getRawAxis(5) * .75);
     } else {
       hothBot.tankDrive(-lJoystick.getRawAxis(1), -lJoystick.getRawAxis(5));
