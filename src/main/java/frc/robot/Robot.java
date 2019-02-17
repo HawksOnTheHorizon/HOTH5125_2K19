@@ -1,30 +1,16 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Robot extends TimedRobot {
-
-  Compressor c = new Compressor(0);
-  DoubleSolenoid beakThingTwo = new DoubleSolenoid(0, 1);
- // DoubleSolenoid beakThingOne = new DoubleSolenoid(0, 0);
-  
-  Joystick cont = new Joystick(0);
-
-  JoystickButton a = new JoystickButton(cont, 1);
-  JoystickButton b = new JoystickButton(cont, 2);
-  JoystickButton x = new JoystickButton(cont, 3);
+  DigitalInput lightfollwer;
 
   @Override
   public void robotInit() {
     // Initialize all components for Teleop
-    c.setClosedLoopControl(true);
-
+    lightfollwer = new DigitalInput(1);
   }
 
   @Override
@@ -39,16 +25,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    // Write Teleop code
-    if(a.get()){
-     // beakThingOne.set(DoubleSolenoid.Value.kForward);
-      beakThingTwo.set(DoubleSolenoid.Value.kForward);
-
-    }else{
-     // beakThingOne.set(DoubleSolenoid.Value.kOff);
-      beakThingTwo.set(DoubleSolenoid.Value.kOff);
-
-    }
-
+    System.out.println(lightfollwer.get());
   }
 }
