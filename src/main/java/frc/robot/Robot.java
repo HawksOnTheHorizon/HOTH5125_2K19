@@ -11,7 +11,8 @@ import edu.wpi.first.wpilibj.Solenoid;
 public class Robot extends TimedRobot {
 
   Compressor c = new Compressor(0);
-  DoubleSolenoid beakThing = new DoubleSolenoid(1, 0);
+  DoubleSolenoid beakThingTwo = new DoubleSolenoid(0, 1);
+ // DoubleSolenoid beakThingOne = new DoubleSolenoid(0, 0);
   
   Joystick cont = new Joystick(0);
 
@@ -40,9 +41,13 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     // Write Teleop code
     if(a.get()){
-      beakThing.set(DoubleSolenoid.Value.kForward);
+     // beakThingOne.set(DoubleSolenoid.Value.kForward);
+      beakThingTwo.set(DoubleSolenoid.Value.kForward);
+
     }else{
-      beakThing.set(DoubleSolenoid.Value.kOff);
+     // beakThingOne.set(DoubleSolenoid.Value.kOff);
+      beakThingTwo.set(DoubleSolenoid.Value.kOff);
+
     }
 
   }
