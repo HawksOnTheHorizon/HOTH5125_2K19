@@ -2,7 +2,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.JoystickBase;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.interfaces.Potentiometer;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -19,6 +22,8 @@ import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Solenoid;
 
 public class Robot extends TimedRobot {
   WPI_VictorSPX tl = new WPI_VictorSPX(4);
@@ -32,7 +37,6 @@ public class Robot extends TimedRobot {
   Servo finger = new Servo(0);
 
   DigitalInput limit = new DigitalInput(0);
-  AnalogPotentiometer armPot = new AnalogPotentiometer(1);
 
   SpeedControllerGroup left = new SpeedControllerGroup(tl, bl);
   SpeedControllerGroup right = new SpeedControllerGroup(tr, br);
@@ -46,19 +50,28 @@ public class Robot extends TimedRobot {
   JoystickButton b = new JoystickButton(contr, 2);
   JoystickButton x = new JoystickButton(contr, 3);
   JoystickButton y = new JoystickButton(contr, 4);
+  JoystickButton leftB = new JoystickButton(contr, 5);
   JoystickButton rightB = new JoystickButton(contr, 6);
   JoystickButton leftFrenchPress = new JoystickButton(contr, 9);
   JoystickButton rightFrenchPress = new JoystickButton(contr, 10);
 
   boolean pressed = true;
   boolean notPressed = false;
-  
 
+  Compressor c = new Compressor(0);
+  Solenoid beakThingTwo = new Solenoid(0);
+  Solenoid beakThingOne = new Solenoid(1);
+
+  AnalogPotentiometer stringPot = new AnalogPotentiometer(1, 360, 20);
+
+
+  UsbCamera camera1;
+  UsbCamera camera2;
 
   @Override
   public void robotInit() {
     // Initialize all components for Teleop
-    
+
     new Thread(() -> {
       UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(0);
       camera1.setResolution(640, 480);
@@ -92,7 +105,9 @@ public class Robot extends TimedRobot {
         outputStream.putFrame(output);
       }
     }).start();
-    
+
+    c.setClosedLoopControl(true);
+
   }
 
   @Override
@@ -108,32 +123,41 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // Write Teleop code
-    System.out.println(armPot.get());
-    
+   // System.out.println(stringPot.get());
+    System.out.println(c.getPressureSwitchValue());   
 
     if (leftFrenchPress.get()) {
       hothBot.tankDrive(-lJoystick.getRawAxis(1) * .75, -lJoystick.getRawAxis(5) * .75);
     } else if (rightFrenchPress.get()) {
       hothBot.tankDrive(lJoystick.getRawAxis(1) * .75, lJoystick.getRawAxis(5) * .75);
     } else {
-      hothBot.tankDrive(-lJoystick.getRawAxis(1), -lJoystick.getRawAxis(5));
+      hothBot.tankDrive(-lJoystick.getRawAxis(1)* .85, -lJoystick.getRawAxis(5)*.85);
     }
 
+    // if ((a.get() == pressed) && (limit.get() == notPressed)) {
+    // arm.set(ControlMode.PercentOutput, .50);
+    // } else if ((a.get() == pressed) && (limit.get() == pressed)) {
+    // arm.set(ControlMode.PercentOutput, 0);
+    // } else {
+    // arm.set(ControlMode.PercentOutput, 0);
+    // }
 
+    // if (y.get()) {
+    //   arm.set(ControlMode.PercentOutput, -.50);
+    // } else if (a.get()) {
+    //   arm.set(ControlMode.PercentOutput, .50);
+    // } else {
+    //   arm.set(ControlMode.PercentOutput, 0);
+    // }
 
-    if ((a.get() == pressed) && (limit.get() == notPressed)) {
-      arm.set(ControlMode.PercentOutput, .50);
-    } else if ((a.get() == pressed) && (limit.get() == pressed)) {
-      arm.set(ControlMode.PercentOutput, 0);
-    } else{
-      arm.set(ControlMode.PercentOutput, 0);
-    }
-
-    if (y.get()) {
+    if (y.get() && (stringPot.get() > 57.0)) {
       arm.set(ControlMode.PercentOutput, -.50);
-    } else {
+    } else if(a.get() && stringPot.get() < 159.0){ 
+      arm.set(ControlMode.PercentOutput, .50);
+    } else if(stringPot.get() < 57.0 || stringPot.get()> 159.0){
       arm.set(ControlMode.PercentOutput, 0);
     }
+
 
     if (x.get()) {
       rightW.set(ControlMode.PercentOutput, -1);
@@ -147,10 +171,11 @@ public class Robot extends TimedRobot {
     }
 
     if (rightB.get()) {
-      finger.setAngle(175);
+      beakThingOne.set(true);
+      beakThingTwo.set(true);
     } else {
-      finger.setAngle(70);
+      beakThingOne.set(false);
+      beakThingTwo.set(false);
     }
-
   }
 }
