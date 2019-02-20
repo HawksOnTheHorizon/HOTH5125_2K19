@@ -3,7 +3,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.CvSource;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -15,10 +16,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
-
-import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoSink;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -41,7 +40,7 @@ public class Robot extends TimedRobot {
 
   DifferentialDrive hothBot = new DifferentialDrive(left, right);
 
-  Joystick lJoystick = new Joystick(0);
+  Joystick vessel = new Joystick(0);
   Joystick contr = new Joystick(1);
 
   JoystickButton a = new JoystickButton(contr, 1);
@@ -50,8 +49,8 @@ public class Robot extends TimedRobot {
   JoystickButton y = new JoystickButton(contr, 4);
   JoystickButton leftB = new JoystickButton(contr, 5);
   JoystickButton rightB = new JoystickButton(contr, 6);
-  JoystickButton leftFrenchPress = new JoystickButton(contr, 9);
-  JoystickButton rightFrenchPress = new JoystickButton(contr, 10);
+  JoystickButton leftFrenchPress = new JoystickButton(vessel, 5);
+  JoystickButton rightFrenchPress = new JoystickButton(vessel, 6);
 
   boolean pressed = true;
   boolean notPressed = false;
@@ -62,46 +61,47 @@ public class Robot extends TimedRobot {
 
   AnalogPotentiometer stringPot = new AnalogPotentiometer(1, 360, 20);
 
-
-  UsbCamera camera1;
-  UsbCamera camera2;
+  // UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(0);
+  // UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(1);
+  // VideoSink server = CameraServer.getInstance().getServer();
 
   @Override
   public void robotInit() {
     // Initialize all components for Teleop
-
     new Thread(() -> {
-      UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(0);
-      camera1.setResolution(640, 480);
+    UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(0);
+    camera1.setResolution(640, 480);
 
-      CvSink cvSink = CameraServer.getInstance().getVideo();
-      CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640, 480);
+    CvSink cvSink = CameraServer.getInstance().getVideo();
+    CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640,
+    480);
 
-      Mat source = new Mat();
-      Mat output = new Mat();
+    Mat source = new Mat();
+    Mat output = new Mat();
 
-      while (!Thread.interrupted()) {
-        cvSink.grabFrame(source);
-        Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
-        outputStream.putFrame(output);
-      }
+    while (!Thread.interrupted()) {
+    cvSink.grabFrame(source);
+    Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
+    outputStream.putFrame(output);
+    }
     }).start();
 
     new Thread(() -> {
-      UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(1);
-      camera2.setResolution(640, 480);
+    UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(1);
+    camera2.setResolution(640, 480);
 
-      CvSink cvSink = CameraServer.getInstance().getVideo();
-      CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640, 480);
+    CvSink cvSink = CameraServer.getInstance().getVideo();
+    CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640,
+    480);
 
-      Mat source = new Mat();
-      Mat output = new Mat();
+    Mat source = new Mat();
+    Mat output = new Mat();
 
-      while (!Thread.interrupted()) {
-        cvSink.grabFrame(source);
-        Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
-        outputStream.putFrame(output);
-      }
+    while (!Thread.interrupted()) {
+    cvSink.grabFrame(source);
+    Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
+    outputStream.putFrame(output);
+    }
     }).start();
 
     c.setClosedLoopControl(true);
@@ -121,48 +121,30 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // Write Teleop code
-   // System.out.println(stringPot.get());
-    System.out.println(c.getPressureSwitchValue());   
+    System.out.println(stringPot.get());
 
     if (leftFrenchPress.get()) {
-      hothBot.tankDrive(-lJoystick.getRawAxis(1) * .75, -lJoystick.getRawAxis(5) * .75);
+      hothBot.tankDrive(-vessel.getRawAxis(1) * .75, -vessel.getRawAxis(5) * .75);
     } else if (rightFrenchPress.get()) {
-      hothBot.tankDrive(lJoystick.getRawAxis(1) * .75, lJoystick.getRawAxis(5) * .75);
+      hothBot.tankDrive(vessel.getRawAxis(5) * .75, vessel.getRawAxis(1) * .75);
     } else {
-      hothBot.tankDrive(-lJoystick.getRawAxis(1)* .85, -lJoystick.getRawAxis(5)*.85);
+      hothBot.tankDrive(-vessel.getRawAxis(1), -vessel.getRawAxis(5));
     }
-
-    // if ((a.get() == pressed) && (limit.get() == notPressed)) {
-    // arm.set(ControlMode.PercentOutput, .50);
-    // } else if ((a.get() == pressed) && (limit.get() == pressed)) {
-    // arm.set(ControlMode.PercentOutput, 0);
-    // } else {
-    // arm.set(ControlMode.PercentOutput, 0);
-    // }
-
-    // if (y.get()) {
-    //   arm.set(ControlMode.PercentOutput, -.50);
-    // } else if (a.get()) {
-    //   arm.set(ControlMode.PercentOutput, .50);
-    // } else {
-    //   arm.set(ControlMode.PercentOutput, 0);
-    // }
 
     if (y.get() && (stringPot.get() > 57.0)) {
       arm.set(ControlMode.PercentOutput, -.50);
-    } else if(a.get() && stringPot.get() < 159.0){ 
+    } else if (a.get() && stringPot.get() < 159.0) {
       arm.set(ControlMode.PercentOutput, .50);
-    } else if(stringPot.get() < 57.0 || stringPot.get()> 159.0){
+    } else if (stringPot.get() < 57.0 || stringPot.get() > 159.0) {
       arm.set(ControlMode.PercentOutput, 0);
     }
 
-
     if (x.get()) {
-      rightW.set(ControlMode.PercentOutput, -1);
-      leftW.set(ControlMode.PercentOutput, 1);
+      rightW.set(ControlMode.PercentOutput, -.60);
+      leftW.set(ControlMode.PercentOutput, .60);
     } else if (b.get()) {
-      rightW.set(ControlMode.PercentOutput, 1);
-      leftW.set(ControlMode.PercentOutput, -1);
+      rightW.set(ControlMode.PercentOutput, .60);
+      leftW.set(ControlMode.PercentOutput, -.60);
     } else {
       rightW.set(ControlMode.PercentOutput, 0);
       leftW.set(ControlMode.PercentOutput, 0);
@@ -175,5 +157,11 @@ public class Robot extends TimedRobot {
       beakThingOne.set(false);
       beakThingTwo.set(false);
     }
+
+    // if (leftB.get()) {
+    //   server.setSource(camera1);
+    // } else {
+    //   server.setSource(camera2);
+    // }
   }
 }
