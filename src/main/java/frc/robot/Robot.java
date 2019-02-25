@@ -61,10 +61,6 @@ public class Robot extends TimedRobot {
 
   AnalogPotentiometer stringPot = new AnalogPotentiometer(1, 360, 20);
 
-  // UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(0);
-  // UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(1);
-  // VideoSink server = CameraServer.getInstance().getServer();
-
   @Override
   public void robotInit() {
     // Initialize all components for Teleop
@@ -157,11 +153,5 @@ public class Robot extends TimedRobot {
       beakThingOne.set(false);
       beakThingTwo.set(false);
     }
-
-    // if (leftB.get()) {
-    //   server.setSource(camera1);
-    // } else {
-    //   server.setSource(camera2);
-    // }
   }
 }
