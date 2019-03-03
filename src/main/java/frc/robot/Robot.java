@@ -1,54 +1,26 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoSink;
 import edu.wpi.first.cameraserver.CameraServer;
 
 public class Robot extends TimedRobot {
 
+  Joystick controller = new Joystick (0);
+  JoystickButton rightB = new JoystickButton(controller, 9);
+  UsbCamera camera1;
+  UsbCamera camera2;
+  VideoSink server;
   @Override
   public void robotInit() {
-    // Initialize all components for Teleop
-    
-    new Thread(() -> {
-      UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(0);
-      camera1.setResolution(640, 480);
-
-      CvSink cvSink = CameraServer.getInstance().getVideo();
-      CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640, 480);
-
-      Mat source = new Mat();
-      Mat output = new Mat();
-
-      while (!Thread.interrupted()) {
-        cvSink.grabFrame(source);
-        Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
-        outputStream.putFrame(output);
-      }
-    }).start();
-
-    new Thread(() -> {
-      UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(1);
-      camera2.setResolution(640, 480);
-
-      CvSink cvSink = CameraServer.getInstance().getVideo();
-      CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640, 480);
-
-      Mat source = new Mat();
-      Mat output = new Mat();
-
-      while (!Thread.interrupted()) {
-        cvSink.grabFrame(source);
-        Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
-        outputStream.putFrame(output);
-      }
-    }).start();
-    
+    camera1 = CameraServer.getInstance().startAutomaticCapture(0);
+    camera2 = CameraServer.getInstance().startAutomaticCapture(1);
+    server = CameraServer.getInstance().getServer();
   }
 
   @Override
@@ -64,5 +36,12 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // Write Teleop code
+      if(rightB.get()){
+        System.out.println("Setting camera 1\n");
+        server.setSource(camera1);
+    }else{
+      System.out.println("Setting camera 2\n");
+      server.setSource(camera2);
+    }
   }
 }
