@@ -63,41 +63,39 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    // Initialize all components for Teleop
+
     new Thread(() -> {
-    UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(0);
-    camera1.setResolution(640, 480);
+      UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(1);
+      camera2.setResolution(640, 480);
 
-    CvSink cvSink = CameraServer.getInstance().getVideo();
-    CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640,
-    480);
+      CvSink cvSink = CameraServer.getInstance().getVideo();
+      CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640, 480);
 
-    Mat source = new Mat();
-    Mat output = new Mat();
+      Mat source = new Mat();
+      Mat output = new Mat();
 
-    while (!Thread.interrupted()) {
-    cvSink.grabFrame(source);
-    Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
-    outputStream.putFrame(output);
-    }
+      while (!Thread.interrupted()) {
+        cvSink.grabFrame(source);
+        Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
+        outputStream.putFrame(output);
+      }
     }).start();
 
     new Thread(() -> {
-    UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(1);
-    camera2.setResolution(640, 480);
+      UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(0);
+      camera2.setResolution(640, 480);
 
-    CvSink cvSink = CameraServer.getInstance().getVideo();
-    CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640,
-    480);
+      CvSink cvSink = CameraServer.getInstance().getVideo();
+      CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640, 480);
 
-    Mat source = new Mat();
-    Mat output = new Mat();
+      Mat source = new Mat();
+      Mat output = new Mat();
 
-    while (!Thread.interrupted()) {
-    cvSink.grabFrame(source);
-    Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
-    outputStream.putFrame(output);
-    }
+      while (!Thread.interrupted()) {
+        cvSink.grabFrame(source);
+        Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
+        outputStream.putFrame(output);
+      }
     }).start();
 
     c.setClosedLoopControl(true);
@@ -112,19 +110,53 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     // Write Autnomous code
+    if (leftFrenchPress.get()) {
+      hothBot.tankDrive(-vessel.getRawAxis(1), -vessel.getRawAxis(5));
+    } else if (rightFrenchPress.get()) {
+      hothBot.tankDrive(vessel.getRawAxis(5) * .75, vessel.getRawAxis(1) * .75);
+    } else {
+      hothBot.tankDrive(-vessel.getRawAxis(1)* .75, -vessel.getRawAxis(5)* .75);
+    }
+
+    if (y.get() && (stringPot.get() > 57.0)) {
+      arm.set(ControlMode.PercentOutput, -.50);
+    } else if (a.get() && stringPot.get() < 159.0) {
+      arm.set(ControlMode.PercentOutput, .50);
+    } else if (stringPot.get() < 57.0 || stringPot.get() > 159.0) {
+      arm.set(ControlMode.PercentOutput, 0);
+    }
+
+    if (x.get()) {
+      rightW.set(ControlMode.PercentOutput, -.70);
+      leftW.set(ControlMode.PercentOutput, .70);
+    } else if (b.get()) {
+      rightW.set(ControlMode.PercentOutput, .70);
+      leftW.set(ControlMode.PercentOutput, -.70);
+    } else {
+      rightW.set(ControlMode.PercentOutput, 0);
+      leftW.set(ControlMode.PercentOutput, 0);
+    }
+
+    if (rightB.get()) {
+      beakThingOne.set(true);
+      beakThingTwo.set(true);
+    } else {
+      beakThingOne.set(false);
+      beakThingTwo.set(false);
+    }
   }
 
   @Override
   public void teleopPeriodic() {
     // Write Teleop code
-    System.out.println(stringPot.get());
+    // System.out.println(stringPot.get());
 
     if (leftFrenchPress.get()) {
-      hothBot.tankDrive(-vessel.getRawAxis(1) * .75, -vessel.getRawAxis(5) * .75);
+      hothBot.tankDrive(-vessel.getRawAxis(1) , -vessel.getRawAxis(5));
     } else if (rightFrenchPress.get()) {
       hothBot.tankDrive(vessel.getRawAxis(5) * .75, vessel.getRawAxis(1) * .75);
     } else {
-      hothBot.tankDrive(-vessel.getRawAxis(1), -vessel.getRawAxis(5));
+      hothBot.tankDrive(-vessel.getRawAxis(1)* .75, -vessel.getRawAxis(5)* .75);
     }
 
     if (y.get() && (stringPot.get() > 57.0)) {
