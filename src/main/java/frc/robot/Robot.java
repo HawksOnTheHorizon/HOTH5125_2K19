@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.VideoSink;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -149,8 +148,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // Write Teleop code
-    // System.out.println(stringPot.get());
-
+ 
     if (leftFrenchPress.get()) {
       hothBot.tankDrive(-vessel.getRawAxis(1) , -vessel.getRawAxis(5));
     } else if (rightFrenchPress.get()) {
