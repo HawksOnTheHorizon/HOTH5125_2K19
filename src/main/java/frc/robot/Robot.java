@@ -20,6 +20,8 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Ultrasonic;
+
 
 public class Robot extends TimedRobot {
   WPI_VictorSPX tl = new WPI_VictorSPX(4);
@@ -60,6 +62,9 @@ public class Robot extends TimedRobot {
 
   AnalogPotentiometer stringPot = new AnalogPotentiometer(1, 360, 20);
 
+  Ultrasonic ultra = new Ultrasonic(0, 1);
+
+
   @Override
   public void robotInit() {
 
@@ -98,6 +103,7 @@ public class Robot extends TimedRobot {
     }).start();
 
     c.setClosedLoopControl(true);
+    ultra.setAutomaticMode(true);
 
   }
 
@@ -143,6 +149,9 @@ public class Robot extends TimedRobot {
       beakThingOne.set(false);
       beakThingTwo.set(false);
     }
+
+    SmartDashboard.putBoolean("Ultrasonic", ultra.getRangeInches()>10);
+
   }
 
   @Override
@@ -183,5 +192,8 @@ public class Robot extends TimedRobot {
       beakThingOne.set(false);
       beakThingTwo.set(false);
     }
+
+    SmartDashboard.putBoolean("Ultrasonic", ultra.getRangeInches()>10);
+
   }
 }
