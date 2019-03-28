@@ -26,6 +26,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Robot extends TimedRobot {
+
+  Ultrasonic ultra = new Ultrasonic(0, 1);
+
   WPI_VictorSPX tl = new WPI_VictorSPX(4);
   WPI_VictorSPX bl = new WPI_VictorSPX(3);
   WPI_VictorSPX br = new WPI_VictorSPX(7);
@@ -36,7 +39,7 @@ public class Robot extends TimedRobot {
 
   Servo finger = new Servo(0);
 
-  DigitalInput limit = new DigitalInput(0);
+  //DigitalInput limit = new DigitalInput(0);
 
   SpeedControllerGroup left = new SpeedControllerGroup(tl, bl);
   SpeedControllerGroup right = new SpeedControllerGroup(tr, br);
@@ -64,11 +67,10 @@ public class Robot extends TimedRobot {
 
   AnalogPotentiometer stringPot = new AnalogPotentiometer(1, 360, 20);
 
-  //Ultrasonic ultra = new Ultrasonic(0, 1);
-
 
   @Override
   public void robotInit() {
+    ultra.setAutomaticMode(true);
 
     new Thread(() -> {
       UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(1);
@@ -105,7 +107,6 @@ public class Robot extends TimedRobot {
     }).start();
 
     c.setClosedLoopControl(true);
-    //ultra.setAutomaticMode(true);
 
   }
 
@@ -152,14 +153,15 @@ public class Robot extends TimedRobot {
       beakThingTwo.set(false);
     }
 
-   // SmartDashboard.putBoolean("Ultrasonic", ultra.getRangeInches()>10);
+   SmartDashboard.putBoolean("Ultrasonic", (ultra.getRangeInches()>18 && ultra.getRangeInches()<23));
 
   }
 
   @Override
   public void teleopPeriodic() {
     // Write Teleop code
- 
+    System.out.println(stringPot.get());
+
     if (leftFrenchPress.get()) {
       hothBot.tankDrive(-vessel.getRawAxis(1) , -vessel.getRawAxis(5));
     } else if (rightFrenchPress.get()) {
@@ -170,9 +172,9 @@ public class Robot extends TimedRobot {
 
     if (y.get() && (stringPot.get() > 57.0)) {
       arm.set(ControlMode.PercentOutput, -.50);
-    } else if (a.get() && stringPot.get() < 159.0) {
+    } else if (a.get() && stringPot.get() < 175.0) {
       arm.set(ControlMode.PercentOutput, .50);
-    } else if (stringPot.get() < 57.0 || stringPot.get() > 159.0) {
+    } else if (stringPot.get() < 57.0 || stringPot.get() > 175.0) {
       arm.set(ControlMode.PercentOutput, 0);
     }
 
@@ -195,7 +197,7 @@ public class Robot extends TimedRobot {
       beakThingTwo.set(false);
     }
 
-    //SmartDashboard.putBoolean("Ultrasonic", ultra.getRangeInches()>10);
+    SmartDashboard.putBoolean("Ultrasonic", (ultra.getRangeInches()>18 && ultra.getRangeInches()<23));
 
   }
 }
