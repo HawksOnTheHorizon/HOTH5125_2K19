@@ -21,6 +21,8 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 
 public class Robot extends TimedRobot {
@@ -62,7 +64,7 @@ public class Robot extends TimedRobot {
 
   AnalogPotentiometer stringPot = new AnalogPotentiometer(1, 360, 20);
 
-  Ultrasonic ultra = new Ultrasonic(0, 1);
+  //Ultrasonic ultra = new Ultrasonic(0, 1);
 
 
   @Override
@@ -103,7 +105,7 @@ public class Robot extends TimedRobot {
     }).start();
 
     c.setClosedLoopControl(true);
-    ultra.setAutomaticMode(true);
+    //ultra.setAutomaticMode(true);
 
   }
 
@@ -132,11 +134,11 @@ public class Robot extends TimedRobot {
     }
 
     if (x.get()) {
-      rightW.set(ControlMode.PercentOutput, -.70);
-      leftW.set(ControlMode.PercentOutput, .70);
+      rightW.set(ControlMode.PercentOutput, -.75);
+      leftW.set(ControlMode.PercentOutput, .75);
     } else if (b.get()) {
-      rightW.set(ControlMode.PercentOutput, .70);
-      leftW.set(ControlMode.PercentOutput, -.70);
+      rightW.set(ControlMode.PercentOutput, .75);
+      leftW.set(ControlMode.PercentOutput, -.75);
     } else {
       rightW.set(ControlMode.PercentOutput, 0);
       leftW.set(ControlMode.PercentOutput, 0);
@@ -150,7 +152,7 @@ public class Robot extends TimedRobot {
       beakThingTwo.set(false);
     }
 
-    SmartDashboard.putBoolean("Ultrasonic", ultra.getRangeInches()>10);
+   // SmartDashboard.putBoolean("Ultrasonic", ultra.getRangeInches()>10);
 
   }
 
@@ -175,11 +177,11 @@ public class Robot extends TimedRobot {
     }
 
     if (x.get()) {
-      rightW.set(ControlMode.PercentOutput, -.60);
-      leftW.set(ControlMode.PercentOutput, .60);
+      rightW.set(ControlMode.PercentOutput, -.75);
+      leftW.set(ControlMode.PercentOutput, .75);
     } else if (b.get()) {
-      rightW.set(ControlMode.PercentOutput, .60);
-      leftW.set(ControlMode.PercentOutput, -.60);
+      rightW.set(ControlMode.PercentOutput, .75);
+      leftW.set(ControlMode.PercentOutput, -.75);
     } else {
       rightW.set(ControlMode.PercentOutput, 0);
       leftW.set(ControlMode.PercentOutput, 0);
@@ -193,7 +195,7 @@ public class Robot extends TimedRobot {
       beakThingTwo.set(false);
     }
 
-    SmartDashboard.putBoolean("Ultrasonic", ultra.getRangeInches()>10);
+    //SmartDashboard.putBoolean("Ultrasonic", ultra.getRangeInches()>10);
 
   }
 }
