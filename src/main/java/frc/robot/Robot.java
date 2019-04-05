@@ -72,9 +72,12 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     ultra.setAutomaticMode(true);
 
+    
     new Thread(() -> {
-      UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(1);
-      camera2.setResolution(640, 480);
+      UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(0);
+      camera1.setResolution(640, 480);
+      // camera1.setExposureManual(60);
+      // camera1.setBrightness(40);
 
       CvSink cvSink = CameraServer.getInstance().getVideo();
       CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640, 480);
@@ -90,9 +93,11 @@ public class Robot extends TimedRobot {
     }).start();
 
     new Thread(() -> {
-      UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(0);
+      UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(1);
       camera2.setResolution(640, 480);
-
+      // camera2.setExposureManual(50);
+      //camera2.setBrightness(70);
+     // camera2.setFPS(5);
       CvSink cvSink = CameraServer.getInstance().getVideo();
       CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640, 480);
 
