@@ -17,12 +17,18 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.VideoSink;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Ultrasonic;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+
 
 public class Robot extends TimedRobot {
+
+  Ultrasonic ultra = new Ultrasonic(0, 1);
+
   WPI_VictorSPX tl = new WPI_VictorSPX(4);
   WPI_VictorSPX bl = new WPI_VictorSPX(3);
   WPI_VictorSPX br = new WPI_VictorSPX(7);
@@ -35,7 +41,7 @@ public class Robot extends TimedRobot {
 
   Servo finger = new Servo(0);
 
-  DigitalInput limit = new DigitalInput(0);
+  //DigitalInput limit = new DigitalInput(0);
 
   SpeedControllerGroup left = new SpeedControllerGroup(tl, bl);
   SpeedControllerGroup right = new SpeedControllerGroup(tr, br);
@@ -63,47 +69,47 @@ public class Robot extends TimedRobot {
 
   AnalogPotentiometer stringPot = new AnalogPotentiometer(1, 360, 20);
 
-  // UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(0);
-  // UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(1);
-  // VideoSink server = CameraServer.getInstance().getServer();
 
   @Override
   public void robotInit() {
-    // Initialize all components for Teleop
+    ultra.setAutomaticMode(true);
+
+    
     new Thread(() -> {
-    UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(0);
-    camera1.setResolution(640, 480);
+      UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(0);
+      camera1.setResolution(640, 240);
+      camera1.setExposureManual(60);
+      camera1.setBrightness(30);
 
-    CvSink cvSink = CameraServer.getInstance().getVideo();
-    CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640,
-    480);
+      CvSink cvSink = CameraServer.getInstance().getVideo();
+      CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640, 240);
 
-    Mat source = new Mat();
-    Mat output = new Mat();
+      Mat source = new Mat();
+      Mat output = new Mat();
 
-    while (!Thread.interrupted()) {
-    cvSink.grabFrame(source);
-    Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
-    outputStream.putFrame(output);
-    }
+      while (!Thread.interrupted()) {
+        cvSink.grabFrame(source);
+        Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
+        outputStream.putFrame(output);
+      }
     }).start();
 
     new Thread(() -> {
-    UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(1);
-    camera2.setResolution(640, 480);
+      UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(1);
+      camera2.setResolution(160,120);
+      camera2.setExposureManual(60);
+      camera2.setBrightness(40);
+      CvSink cvSink = CameraServer.getInstance().getVideo();
+      CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640, 480);
 
-    CvSink cvSink = CameraServer.getInstance().getVideo();
-    CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 640,
-    480);
+      Mat source = new Mat();
+      Mat output = new Mat();
 
-    Mat source = new Mat();
-    Mat output = new Mat();
-
-    while (!Thread.interrupted()) {
-    cvSink.grabFrame(source);
-    Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
-    outputStream.putFrame(output);
-    }
+      while (!Thread.interrupted()) {
+        cvSink.grabFrame(source);
+        Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
+        outputStream.putFrame(output);
+      }
     }).start();
 
     c.setClosedLoopControl(true);
@@ -118,19 +124,12 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     // Write Autnomous code
-  }
-
-  @Override
-  public void teleopPeriodic() {
-    // Write Teleop code
-    System.out.println(stringPot.get());
-
     if (leftFrenchPress.get()) {
-      hothBot.tankDrive(-vessel.getRawAxis(1) * .75, -vessel.getRawAxis(5) * .75);
+      hothBot.tankDrive(-vessel.getRawAxis(1), -vessel.getRawAxis(5));
     } else if (rightFrenchPress.get()) {
       hothBot.tankDrive(vessel.getRawAxis(5) * .75, vessel.getRawAxis(1) * .75);
     } else {
-      hothBot.tankDrive(-vessel.getRawAxis(1), -vessel.getRawAxis(5));
+      hothBot.tankDrive(-vessel.getRawAxis(1)* .75, -vessel.getRawAxis(5)* .75);
     }
 
     if (y.get() && (stringPot.get() > 57.0)) {
@@ -142,11 +141,11 @@ public class Robot extends TimedRobot {
     }
 
     if (x.get()) {
-      rightW.set(ControlMode.PercentOutput, -.60);
-      leftW.set(ControlMode.PercentOutput, .60);
+      rightW.set(ControlMode.PercentOutput, -.75);
+      leftW.set(ControlMode.PercentOutput, .75);
     } else if (b.get()) {
-      rightW.set(ControlMode.PercentOutput, .60);
-      leftW.set(ControlMode.PercentOutput, -.60);
+      rightW.set(ControlMode.PercentOutput, .75);
+      leftW.set(ControlMode.PercentOutput, -.75);
     } else {
       rightW.set(ControlMode.PercentOutput, 0);
       leftW.set(ControlMode.PercentOutput, 0);
@@ -160,10 +159,51 @@ public class Robot extends TimedRobot {
       beakThingTwo.set(false);
     }
 
-    // if (leftB.get()) {
-    //   server.setSource(camera1);
-    // } else {
-    //   server.setSource(camera2);
-    // }
+   SmartDashboard.putBoolean("Ultrasonic", (ultra.getRangeInches()>18 && ultra.getRangeInches()<23));
+
+  }
+
+  @Override
+  public void teleopPeriodic() {
+    // Write Teleop code
+    System.out.println(stringPot.get());
+
+    if (leftFrenchPress.get()) {
+      hothBot.tankDrive(-vessel.getRawAxis(1) , -vessel.getRawAxis(5));
+    } else if (rightFrenchPress.get()) {
+      hothBot.tankDrive(vessel.getRawAxis(5) * .75, vessel.getRawAxis(1) * .75);
+    } else {
+      hothBot.tankDrive(-vessel.getRawAxis(1)* .75, -vessel.getRawAxis(5)* .75);
+    }
+
+    if (y.get() && (stringPot.get() > 57.0)) {
+      arm.set(ControlMode.PercentOutput, -.50);
+    } else if (a.get() && stringPot.get() < 175.0) {
+      arm.set(ControlMode.PercentOutput, .50);
+    } else if (stringPot.get() < 57.0 || stringPot.get() > 175.0) {
+      arm.set(ControlMode.PercentOutput, 0);
+    }
+
+    if (x.get()) {
+      rightW.set(ControlMode.PercentOutput, -.75);
+      leftW.set(ControlMode.PercentOutput, .75);
+    } else if (b.get()) {
+      rightW.set(ControlMode.PercentOutput, .75);
+      leftW.set(ControlMode.PercentOutput, -.75);
+    } else {
+      rightW.set(ControlMode.PercentOutput, 0);
+      leftW.set(ControlMode.PercentOutput, 0);
+    }
+
+    if (rightB.get()) {
+      beakThingOne.set(true);
+      beakThingTwo.set(true);
+    } else {
+      beakThingOne.set(false);
+      beakThingTwo.set(false);
+    }
+
+    SmartDashboard.putBoolean("Ultrasonic", (ultra.getRangeInches()>18 && ultra.getRangeInches()<23));
+
   }
 }
