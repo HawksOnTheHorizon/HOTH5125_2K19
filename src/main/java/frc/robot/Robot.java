@@ -31,6 +31,8 @@ public class Robot extends TimedRobot {
   TalonSRX leftW = new TalonSRX(2);
   VictorSPX arm = new VictorSPX(6);
 
+
+
   Servo finger = new Servo(0);
 
   DigitalInput limit = new DigitalInput(0);
