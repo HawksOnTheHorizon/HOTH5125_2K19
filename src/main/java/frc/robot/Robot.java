@@ -57,8 +57,8 @@ public class Robot extends TimedRobot {
   JoystickButton y = new JoystickButton(contr, 4); //driver 2
   JoystickButton leftB = new JoystickButton(contr, 5); //driver 2
   JoystickButton rightB = new JoystickButton(contr, 6); //driver 2
-  JoystickButton leftFrenchPress = new JoystickButton(vessel, 5); //driver 1
-  JoystickButton rightFrenchPress = new JoystickButton(vessel, 6); //driver 1
+  JoystickButton leftButton = new JoystickButton(vessel, 5); //driver 1
+  JoystickButton rightButton = new JoystickButton(vessel, 6); //driver 1
 
   boolean pressed = true;
   boolean notPressed = false;
@@ -124,9 +124,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     // Write Autnomous code
-    if (leftFrenchPress.get()) { // leftFrenchPress = LT, if the LT button is pressed then 
+    if (leftButton.get()) { // if the left shoulder button is pressed then 
       hothBot.tankDrive(-vessel.getRawAxis(1), -vessel.getRawAxis(5)); // drive at 100% speed
-    } else if (rightFrenchPress.get()) { // rightFrenchPress = RT, otherwise if the RT button is pressed then  
+    } else if (rightButton.get()) { // otherwise if the right shoulder button is pressed then  
       hothBot.tankDrive(vessel.getRawAxis(5) * .75, vessel.getRawAxis(1) * .75); // reverse drive at 75% speed
     } else { //otherwise if nothing is pressed then 
       hothBot.tankDrive(-vessel.getRawAxis(1)* .75, -vessel.getRawAxis(5)* .75); // drive at 75% speed
@@ -168,9 +168,9 @@ public class Robot extends TimedRobot {
     // Write Teleop code
     System.out.println(stringPot.get()); // print out value of potentiometer 
 
-    if (leftFrenchPress.get()) {
+    if (leftButton.get()) {
       hothBot.tankDrive(-vessel.getRawAxis(1) , -vessel.getRawAxis(5));
-    } else if (rightFrenchPress.get()) {
+    } else if (rightButton.get()) {
       hothBot.tankDrive(vessel.getRawAxis(5) * .75, vessel.getRawAxis(1) * .75);
     } else {
       hothBot.tankDrive(-vessel.getRawAxis(1)* .75, -vessel.getRawAxis(5)* .75);
