@@ -124,38 +124,58 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     // Write Autnomous code
-    if (leftButton.get()) { // if the left shoulder button is pressed then 
-      hothBot.tankDrive(-vessel.getRawAxis(1), -vessel.getRawAxis(5)); // drive at 100% speed
-    } else if (rightButton.get()) { // otherwise if the right shoulder button is pressed then  
-      hothBot.tankDrive(vessel.getRawAxis(5) * .75, vessel.getRawAxis(1) * .75); // reverse drive at 75% speed
-    } else { //otherwise if nothing is pressed then 
-      hothBot.tankDrive(-vessel.getRawAxis(1)* .75, -vessel.getRawAxis(5)* .75); // drive at 75% speed
+
+    /*
+      If the left shoulder button is pressed on joystick 1, then the robot will run normally at 100% speed. 
+      If the right shoulder button is pressed on joystick 1, then the robot will run at 75% speed while also having inverted drive.
+      Otherwise if none of the buttons are pressed, then the  robot will run normally at 75% speed. 
+    */
+    if (leftButton.get()) { 
+      hothBot.tankDrive(-vessel.getRawAxis(1), -vessel.getRawAxis(5)); 
+    } else if (rightButton.get()) {   
+      hothBot.tankDrive(vessel.getRawAxis(5) * .75, vessel.getRawAxis(1) * .75); 
+    } else {  
+      hothBot.tankDrive(-vessel.getRawAxis(1)* .75, -vessel.getRawAxis(5)* .75); 
     }
 
-    if (y.get() && (stringPot.get() > 57.0)) { // if y buttton is pressed and the potentiometer is more than 57 then
-      arm.set(ControlMode.PercentOutput, -.50); // the arm goes up
-    } else if (a.get() && stringPot.get() < 159.0) { // otherwise if a button is pressed and the potentiometer is less than 159 then
-      arm.set(ControlMode.PercentOutput, .50); // the arm goes down
-    } else if (stringPot.get() < 57.0 || stringPot.get() > 159.0) { // otherwise if the potentiometer is less than 57 but more 159 then
-      arm.set(ControlMode.PercentOutput, 0); // the arm does nothing
+    /*
+      If the y button is pressed on joystick 2 and the potentiometer value is more than 57, then the arm will go up.
+      If the a button is pressed on joystick 2 and the potentiometer value is less than 159, then the arm will go down. 
+      If the potentiometer value is less than 57 OR more than 159, then the arm does nothing.  
+    */ 
+    if (y.get() && (stringPot.get() > 57.0)) { 
+      arm.set(ControlMode.PercentOutput, -.50); 
+    } else if (a.get() && stringPot.get() < 159.0) { 
+      arm.set(ControlMode.PercentOutput, .50); 
+    } else if (stringPot.get() < 57.0 || stringPot.get() > 159.0) { 
+      arm.set(ControlMode.PercentOutput, 0); 
     }
 
-    if (x.get()) { // if x button is pressed then
-      rightW.set(ControlMode.PercentOutput, -.75); // right and left wheel turn inward; intake 
+    /*
+      If the x button is pressed on joystick 2, then the right and left wheel on arm turn inward. 
+      If the b button is pressed on joystick 2, then the right and left wheel on arm turn outward.
+      Otherwise if none of the buttons are pressed, then the right and left wheel on arm do nothing.
+    */
+    if (x.get()) {
+      rightW.set(ControlMode.PercentOutput, -.75); 
       leftW.set(ControlMode.PercentOutput, .75);
-    } else if (b.get()) { // if b button is pressed then 
-      rightW.set(ControlMode.PercentOutput, .75); // right and left wheel turn outward; shooter
+    } else if (b.get()) {
+      rightW.set(ControlMode.PercentOutput, .75);
       leftW.set(ControlMode.PercentOutput, -.75);
-    } else { // otherwise if nothing is pressed then 
-      rightW.set(ControlMode.PercentOutput, 0); // right and left wheel do nothing 
+    } else { 
+      rightW.set(ControlMode.PercentOutput, 0); 
       leftW.set(ControlMode.PercentOutput, 0);
     }
 
-    if (rightB.get()) { // rightB = RB, if RB is pressed then
-      beakThingOne.set(true); // set boolean to true and extend pistons  
+    /*
+      If the right shoulder button is pressed on joystick 2, then set boolean to true and extend both pistons.
+      Otherwise if it is not pressed, then set boolean to false and don't extend both pistons. 
+    */
+    if (rightB.get()) { 
+      beakThingOne.set(true); 
       beakThingTwo.set(true);
-    } else { // otherwise if nothing is pressed then
-      beakThingOne.set(false); // set boolean to false and don't extend pistons
+    } else {
+      beakThingOne.set(false); 
       beakThingTwo.set(false);
     }
 
@@ -166,7 +186,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() { // comments in auto explain teleop code as well
     // Write Teleop code
-    System.out.println(stringPot.get()); // print out value of potentiometer 
+    System.out.println(stringPot.get()); // prints out value of potentiometer 
 
     if (leftButton.get()) {
       hothBot.tankDrive(-vessel.getRawAxis(1) , -vessel.getRawAxis(5));
